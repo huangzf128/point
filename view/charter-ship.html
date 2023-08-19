@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block style %}
+	body {
+		overflow-x:hidden; 
+		padding-bottom:100px;
+	}
+	ol.content {
+		list-style: none;
+		counter-reset: steps;
+	}
+	ol.content li {
+		counter-increment: steps;
+	}
+	ol.content li::before {
+		content: counter(steps);
+		margin-right: 0.5rem;
+		background: darkorchid;
+		color: white;
+		width: 1.2em;
+		height: 1.2em;
+		border-radius: 50%;
+		display: inline-grid;
+		place-items: center;
+		line-height: 1.2em;
+	}	
+{% endblock %}
+
+
+{% block content %}
+
+<br/>	
+<div class="container mt-5 ">
+
+<h4 class="text-warning pt-3 title">チャーター便での発送について</h4>
+<h6 class="fw-bold">発送料金：</h6>
+<p>
+こちらの商品はチャーター便で<span style="color:red;">別途料金</span>です。<br/>
+※但し、沖縄県・離島につきましては<span style="color:red;">別途</span>お見積りとなります。<br/>
+※代金引換便不可となります。<br/>
+</p>
+
+<h6 class="fw-bold">配送方法：　</h6>
+<p>
+チャーター便でお客様にて運送会社をお選び頂く事は出来ません。<br/>
+発送目安：即日〜7営業日以内<br/>
+※お支払い方法、ご購入のタイミング、在庫状況により異なります。ご了承ください。<br/>
+</p>
+
+
+<h6 class="fw-bold">備考欄：</h6>
+<p>
+	大型商品の為チャーター便でのお届けとなります。(お荷物番号による追跡は行わない場合はあります。ご了承ください。)<br/>
+	発送はトールエキスプレスジャパン(および関連運送会社)営業所止めにて行なわせて頂きます。<br/>
+	営業所のご指定をお願い申し上げます。<br/>
+	ご指定の御座いません場合は弊社にて最寄りの営業所指定を行なわせて頂きます。<br/>
+	お客様ご自身で指定の営業拠点まで出向いていただき、品物を受取っていただきます。<br/>
+	お客様にて運送便の指定および到着日時指定は行えません。<br/>
+</p>
+
+<h6 class="fw-bold">※注意事項：</h6>
+<p>
+	専用のチャーター便を使用しておりますので、商品発送完了より商品到着までは7日から10日程かかる場合が御座います。<br/>
+	入荷時期によってカラーやサイズが一部予告なく変更となる場合が御座います。<br/>
+	システムによる自動計算が正確でない場合が御座います。その場合は弊社にて修正を行なわせて頂きます。<br/>
+	ご注文時の自動返信メールに記載の金額は確定ではございません。弊社からの受注確認メールをご確認下さい。<br/>
+</p>
+
+
+</div>
+{% endblock %}
+
+
+
+{% block script %}
+
+{% if error is defined %}
+	$('#signup').modal('show');
+	alert('" . {{error}} . "');
+{% endif %}
+
+
+{% if error_login is defined %}
+	$('#login').modal('show');
+	alert('" . {{error_login}} . "');
+{% endif %}
+
+{% endblock %}

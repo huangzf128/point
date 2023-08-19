@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Ｂ・ＰＯＩＮＴ総合商社-ネット販売</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Ｂ・ＰＯＩＮＴ総合商社-ネット販売">
+<meta name="keywords" content="Ｂ・ＰＯＩＮＴ, 総合商社, ネット販売">
+
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"> -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+<!-- <link rel="stylesheet" href="/css/fontawesome-free-6.2.0.min.css"> -->
+<link rel="stylesheet" href="style.css?{{tm}}">
+
+<style>
+{% block style %}
+{% endblock %}
+.carousel-control-prev-icon, .carousel-control-next-icon {
+	background-color: black;
+}
+</style>
+</head>
+
+<body class="{{ bodyClass }}">
+    <!--Header-->
+	{% include 'includes/header_menu.php' %}
+    <!--Header ends-->
+
+	{% block content %}
+	{% endblock %}
+
+    <!--footer -->
+	{% include 'includes/footer.php' %}
+    <!--footer end-->	
+</body>
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+<script>
+
+	var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+	var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+		return new bootstrap.Popover(popoverTriggerEl, {delay: { "hide": 3000 }})
+	})
+
+	$(document).ready(function () {
+
+		// 新規登録
+		$("#btn_signup").click(function() {
+			var forms = document.querySelectorAll('.needs-validation')
+			let error = false;
+			Array.prototype.slice.call(forms)
+				.forEach(function (form) {
+					if (!form.checkValidity()) {
+						error = true;
+					}
+					form.classList.add('was-validated')
+				});
+			
+			if (error) {
+				return;
+			}
+
+			let data = $('#frm_signin').serializeArray();
+			sendAjax("signup", data, function(data){
+				if(data.error){
+					alert(data.error);
+				} else {
+					$("#ul_guest").hide();
+					$("#ul_user").show();
+					$('#signup').modal('hide');
+				}
+			});
+		});
+
+		// ログイン
+		$("#btn_login").click(function() {
+			let data = $('#frm_login').serializeArray();
+			sendAjax("login", data, function(data){
+				if(data.error_login){
+					alert(data.error_login);
+				} else {
+					window.location.reload();
+					// $("#ul_guest").hide();
+					// $("#ul_user").show();
+					// $('#login').modal('hide');
+				}
+			});
+		});
+		
+		{% if message is defined %}
+			alert("{{ message }}");
+		{% endif %}
+
+		{% if email is empty %}
+			// 未ログイン
+			$("#ul_guest").show();
+			$("#ul_user").hide();
+		{% else %}
+			// ログイン済
+			$("#ul_guest").hide();
+			$("#ul_user").show();
+		{% endif %}
+
+		{% block script %}
+		{% endblock %}
+	});
+
+	function sendAjax(url, data, callback) {
+		$.ajax({
+			url: url,
+			type:'POST',
+			data : data,
+			timeout: 5000,
+		}).done(function(data) {
+			callback(data);
+		}).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+			// alert("error");
+		})
+	}
+	</script>
+</html>

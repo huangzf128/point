@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center">
+	<div class=" col-md-6  my-5 table-responsive p-5">
+		<form id="frm" action="order" method="post">
+			<input id="orders" name="orders" type="hidden" />
+			<table id="tab" class="table table-striped table-bordered table-hover ">
+
+				{% if items is empty %}
+				<div> <img src='images/empty-cart.jpg' class='image-fluid' height='150'></div><br />
+				<div class='text-bold  h5'>Add items to the cart first!<div>
+
+					{% else %}
+					<thead>
+						<tr>
+							<th>番号</th>
+							<th>品名</th>
+							<th>価格</th>
+							<th>数量</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for id, item in items %}
+						<tr name="detail">
+							<td name="col_id">{{ id }}</td>
+							<td name="col_name">{{ item.name }}</td>
+							<td >{{ item.price }}</td>
+							<td name="col_number"><input name="quantity" type="number" min="0" max="99" value={{ item.quantity ?? 1 }} style="width: 50px;" /></td>
+							<td><a href='cart-remove?id={{ id }}' class='remove_item_link'> Remove</a></td>
+						</tr>
+						{% endfor %}
+						<tr>
+							<td></td>
+							<td>Total</td>
+							<td></td>
+							<td></td>
+							<td><a id="btnConfirm" class='btn btn-primary'>Confirm Order</a></td>
+						</tr>
+
+						{% endif %}
+
+					</tbody>
+			</table>
+		</form>
+	</div>
+</div>
+{% endblock %}
+
+{% block script %}
+
+$("#btnConfirm").click(function() {
+	let orders = {};
+	$("#tab tbody tr[name=detail]").each(function(i, tr) {
+		let id = $(tr).find("td[name=col_id]").text();
+		let num = $(tr).find("input[name=quantity]").val();
+		if (num == 0) {
+			let name = $(tr).find("td[name=col_name]").text();
+			alert(name + "の購入数量を入力してください。");
+			return false;
+		}
+		orders[id] = num;
+	});
+
+	$("#orders").val(JSON.stringify(orders));
+	$("#frm").submit();
+});
+
+{% endblock %}

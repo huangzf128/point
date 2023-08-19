@@ -1,0 +1,260 @@
+{% extends "top.html" %}
+
+
+{% block content %}
+<style>
+	.mySwiper2 {
+		width: 100%;
+	}
+
+	.mySwiper {
+		box-sizing: border-box;
+		padding: 10px 0;
+	}
+
+	.mySwiper .swiper-slide {
+		width: 25%;
+		height: 100%;
+		opacity: 0.4;
+	}
+
+	.mySwiper .swiper-slide-thumb-active {
+		opacity: 1;
+	}
+
+	.swiper-slide img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+</style>
+<main id="main">
+
+	<!-- ======= Breadcrumbs ======= -->
+	<section id="breadcrumbs" class="breadcrumbs">
+		<div class="container">
+
+			<ol>
+				<li><a href="/">Home</a></li>
+				<li>ラインナップ</li>
+			</ol>
+			<h2>商品詳細</h2>
+
+		</div>
+	</section><!-- End Breadcrumbs -->
+
+	<!-- ======= Portfolio Details Section ======= -->
+	<section id="portfolio-details" class="portfolio-details">
+		<div class="container">
+
+			<div class="row gy-4">
+
+				<div class="col-lg-5">
+
+					<div class="swiper mySwiper2">
+
+						<div class="swiper-wrapper align-items-center">
+
+							<div class="swiper-slide">
+								<img src="assets/img/detail-frame.jpg" alt="">
+							</div>
+
+							<div class="swiper-slide">
+								<img src="assets/img/detail-saddle.jpg" alt="">
+							</div>
+
+							<div class="swiper-slide">
+								<img src="assets/img/detail-watch.jpg" alt="">
+							</div>
+
+							<div class="swiper-slide">
+								<img src="assets/img/kick-back.jpg" alt="">
+							</div>
+						</div>
+						<div class="swiper-button-next"></div>
+						<div class="swiper-button-prev"></div>
+						<!-- <div class="swiper-pagination"></div> -->
+					</div>
+
+					<div thumbsSlider="" class="swiper mySwiper">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide">
+								<img src="assets/img/detail-frame.jpg" />
+							</div>
+							<div class="swiper-slide">
+								<img src="assets/img/detail-saddle.jpg" />
+							</div>
+							<div class="swiper-slide">
+								<img src="assets/img/detail-watch.jpg" />
+							</div>
+							<div class="swiper-slide">
+								<img src="assets/img/kick-back.jpg" />
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="col-lg-7">
+					<div class="portfolio-info">
+						<h3>製品仕様 (AS-L19)</h3>
+						<table class="table table-striped table-hover">
+							<tr>
+								<td>フレーム素材</td>
+								<td>6061-T6アルミニウム
+								</td>
+							</tr>
+							<tr>
+								<td>ライザー高</td>
+								<td>調整可能
+								</td>
+							</tr>
+							<tr>
+								<td>サスペンション形式</td>
+								<td>前後ダブルサスペンション
+								</td>
+							</tr>
+							<tr>
+								<td>車両サイズ</td>
+								<td>1230 * 207 * 1480mm
+								</td>
+							</tr>
+							<tr>
+								<td>本体重量</td>
+								<td>23kg
+								</td>
+							</tr>
+							<tr>
+								<td>耐荷重</td>
+								<td>120kg
+								</td>
+							</tr>
+							<tr>
+								<td>ブレーキ</td>
+								<td>前後ディスクブレーキ
+								</td>
+							</tr>
+							<tr>
+								<td>最高速度</td>
+								<td>20km/h
+								</td>
+							</tr>
+							<tr>
+								<td>モーター</td>
+								<td>ブラシレストォースレスモーター
+								</td>
+							</tr>
+							<tr>
+								<td>モーター出力</td>
+								<td>350W
+								</td>
+							</tr>
+							<tr>
+								<td>満充電あたりの<br />走行可能距離</td>
+								<td>40km
+								</td>
+							</tr>
+							<tr>
+								<td>ライト</td>
+								<td>ヘッドライト、警告灯、方向指示器、テールランプ
+								</td>
+							</tr>
+							<tr>
+								<td>タイヤ</td>
+								<td>タイヤの空気圧設定は、3.8kgf/cm<sup>2</sup> での設定を推奨しています。</td>
+							</tr>							
+						</table>
+
+						<table class="table table-striped table-hover caption-top">
+							<caption>バッテリー</caption>
+							<tr>
+								<td>容量</td>
+								<td>10.4Ah
+								</td>
+							</tr>
+							<tr>
+								<td>種類</td>
+								<td>リチウムイオンバッテリー
+								</td>
+							</tr>
+							<tr>
+								<td>充電時間</td>
+								<td>3.5時間
+								</td>
+							</tr>
+							<tr>
+								<td>充電器電源</td>
+								<td>100～240V 50/60Hz
+								</td>
+							</tr>
+						</table>
+
+					</div>
+
+					<div class="portfolio-info" style="margin-top: 10px;" id="ship">
+						<h2>送料について</h2>
+						<hr/>
+						<p>
+							送料は全国一律4500円（税込）です。<br/>
+							（但し、北海道・沖縄離島へのお届けの場合、別途送料が必要です。） <br/>
+							商品の配送は、日本国内に限らせていただきます。<br/>
+							通常5営業日以内で配送となります。<br/>
+							諸般の事情により商品のお届けが遅れる場合は、誠に勝手ながらメールにてご連絡させていただきます。<br/>
+							配送希望時間帯は、下記よりお選びいただけます。<br/>
+							指定なし／午前中／12時～14時／14時～16時／16時～18時／18時～20時／18時～21時／19時～21時
+						</p>
+					</div>
+
+					<div class="portfolio-description" id="guarantee">
+						<h2>品質保証について</h2>
+						<hr/>
+						<p>
+							・この保証書は、お買い上げ後に正常な使用状態で起きた故障について無償で修理、または交換することを保証いたします。
+							(接触や落下、水没などの場合は無償保証の対象外になります。)<br/>
+							・本製品の保証期間はお買い上げ日より１年間です。<br/>
+							・誤った使用方法、落下、衝撃、圧迫による故障および損傷は保証範囲に含まれません。<br/>
+							・使用上の注意事項に記載された事項に反する場合は無償の保証範囲に含まれません。<br/>
+							・本保障書とご購入履歴がわかるレシート、領収書は大切に保管してください。無くされた場合は保証期間内であっても保証が受けられない場合があります。<br/>
+							・製品使用時に飲料または液体が侵入しないようにご注意ください。液体が侵入した場合は修理できなくなる場合があります。<br/>
+							・本保証書は正規販売店からの新品購入品に対してのみ有効です。個人売買、ネットオークション、中古納入品については保証範囲に含まれません。<br/>
+							・本保証は製品故障について適用されます。<br/>
+							・本製品による損害、賠償につきましては保証いたしかねます。<br/>
+							・タイヤの摩耗、バッテリー容量低下などは保証内であっても保証範囲に含まれません。<br/>
+							・販売形態によっては当保証書が有効でない場合がございます、詳細は販売店へご確認ください。
+						</p>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</section><!-- End Portfolio Details Section -->
+
+</main><!-- End #main -->
+
+{% endblock %}
+
+{% block script %}
+$('#header').addClass('header-inner-pages');
+
+var swiper = new Swiper(".mySwiper", {
+spaceBetween: 30,
+slidesPerView: 4,
+freeMode: true,
+watchSlidesProgress: true,
+});
+
+var swiper2 = new Swiper(".mySwiper2", {
+spaceBetween: 10,
+navigation: {
+nextEl: ".swiper-button-next",
+prevEl: ".swiper-button-prev",
+},
+thumbs: {
+swiper: swiper,
+},
+loop:true,
+});
+
+{% endblock %}

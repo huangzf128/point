@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block style %}
+body {
+overflow-x:hidden;
+padding-bottom:100px;
+}
+{% endblock %}
+
+
+{% block content %}
+
+<div>
+	<div class="container mt-5 ">
+		<div class="row justify-content-around">
+
+			<div class="col-md-10 mt-3">
+				<h3 class="text-warning pt-3 title">注文履歴</h3>
+				<hr />
+				<p class="mt-2">
+					<table class="table">
+						<thead>
+						  <tr>
+							<th scope="col">日付</th>
+							<th scope="col">オーダーID</th>
+							<th scope="col">商品名</th>
+							<th scope="col">価格</th>
+							<th scope="col">数量</th>
+						  </tr>
+						</thead>
+						<tbody>
+						{% for order in orders %}
+						<tr>
+							<td>{{order.insert_dt}}</td>
+							<td>{{order.id}}</td>
+							<td>{{order.name}}</td>
+							<td>{{order.price}}</td>
+							<td>{{order.quantity}}</td>
+						</tr>
+						{% endfor %}
+						</tbody>
+					  </table>
+				</p>
+			</div>
+
+		</div>
+	</div>
+</div>
+<div class="container pb-3">
+</div>
+<div class="container mt-3 d-flex justify-content-center card pb-3 col-md-6">
+</div>
+
+</div>
+
+{% endblock %}
+
+
+
+{% block script %}
+
+{% if error is defined %}
+$('#signup').modal('show');
+alert('" . {{error}} . "');
+{% endif %}
+
+
+{% if error_login is defined %}
+$('#login').modal('show');
+alert('" . {{error_login}} . "');
+{% endif %}
+
+{% endblock %}
