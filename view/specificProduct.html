@@ -1,0 +1,141 @@
+{% extends "layout.html" %}
+
+{% block style %}
+	body {
+		overflow-x:hidden; 
+		padding-bottom:100px;
+	}
+	caption { caption-side:top; }
+{% endblock %}
+
+
+{% block content %}
+
+<br/>	
+<div class="container mt-5 ">
+<table class="table table-info table-striped">
+	<caption>特定商取引法に基づく表記</caption>
+	<tr>
+	<th>販売業者</th>
+	<td>株式会社B・POINT総合商社
+	</td>
+	</tr>
+	<tr>
+	<th>運営統括責任者名</th>
+	<td>高田　敦子</td>
+	</tr>
+	<tr>
+	<th>郵便番号</th>
+	<td>813-0032</td>
+	</tr>
+	<tr>
+	<th>住所</th>
+	<td>福岡県福岡市東区土井2-25-7</td>
+	</tr>
+	<tr>
+	<th>商品代金以外の料金の説明</th>
+	<td>
+		販売価格とは別に配送料、代引き手数料、振込手数料がかかる場合もございます。<br>
+海外への発送も可能ですが、送料はEMS実費でいただきます。
+	</td>
+	</tr>
+	<tr>
+	<th>申込有効期限	</th>
+	<td>
+		ご注文後7日以内といたします。ご注文後７日間ご入金がない場合は、購入の意思がないものとし、注文を自動的にキャンセルとさせていただきます。
+	</td>
+	</tr>
+	<tr>
+	<th>不良品</th>
+	<td>
+		商品到着後速やかにご連絡ください。商品に欠陥がある場合を除き、返品には応じかねますのでご了承ください。
+	</td>
+	</tr>
+	<tr>
+	<th>販売数量</th>
+	<td>
+		各商品ページにてご確認ください。<br>
+	</td>
+	</tr>
+	<tr>
+		<th>発送目安</th>
+		<td>
+			入金後即日～7営業日以内<br/>
+			※お支払い方法、ご購入のタイミング、在庫状況により異なります。ご了承ください。
+		</td>
+	</tr>
+	<tr>
+		<th>お支払い方法</th>
+		<td>
+			銀行振込<br/>
+		</td>
+	</tr>
+
+	<tr>
+		<th>返品期限</th>
+		<td>
+			商品到着後７日以内とさせていただきます。<br>
+		</td>
+		</tr>
+		<tr>
+	<th>屋号またはサービス名</th>
+	<td>
+		B-POINTNOUKI<br>
+	</td>
+	</tr>
+	<tr>
+	<th>TEL/FAX</th>
+	<td>
+		092-984-1126<br>
+	</td>
+	</tr>
+		<tr>
+	<th>公開メールアドレス</th>
+	<td>
+		info@b-point-trading.com<br>
+	</td>
+	</tr>
+		<tr>
+	<th>ホームページ</th>
+	<td>
+		https://www.b-point-trading.com<br>
+	</td>
+	<tr>
+		<th colspan="2" style="font-size: 80%">
+			株式会社B・POINT総合商社と関係なく、勝手に輸入者として当社を騙る業者（企業）があれば、その業者に対して当社として法的手段を取ります。
+		</th>
+	</tr>
+</table>
+	
+<br/><br/>
+
+<table class="table table-warning table-striped" id="kobutsu">
+	<caption><a href="#kobutsu">古物営業法に基づく表示</a></caption>
+	<tr>
+	<th>販売業者</th>
+	<td>株式会社B・POINT総合商社</td>
+	</tr>
+	<tr>
+	<th>許可番号</th>
+	<td>福岡県公安委員会　<br/>第901032110049号</td>
+	</tr>
+	</table>
+</div>
+{% endblock %}
+
+
+
+{% block script %}
+
+{% if error is defined %}
+	$('#signup').modal('show');
+	alert('" . {{error}} . "');
+{% endif %}
+
+
+{% if error_login is defined %}
+	$('#login').modal('show');
+	alert('" . {{error_login}} . "');
+{% endif %}
+
+{% endblock %}

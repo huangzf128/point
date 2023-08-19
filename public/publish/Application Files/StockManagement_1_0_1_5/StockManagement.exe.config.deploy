@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <configSections>
+    <sectionGroup name="userSettings" type="System.Configuration.UserSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <section name="StockManagement.My.MySettings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" allowExeDefinition="MachineToLocalUser" requirePermission="false" />
+    </sectionGroup>
+  </configSections>
+  <startup>
+    <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7.2" />
+  </startup>
+  <userSettings>
+    <StockManagement.My.MySettings>
+      <setting name="OrderCsv" serializeAs="String">
+        <value />
+      </setting>
+      <setting name="OrderOutput" serializeAs="String">
+        <value />
+      </setting>
+    </StockManagement.My.MySettings>
+  </userSettings>
+  <appSettings>
+    <!--<add key="DBConnStr" value="Server=JPONSRV;Database=STOCKDB;User Id=stock_user;Password=password;" />-->
+
+    <add key="DBConnStr" value="Data Source=JPONSRV;Initial Catalog=STOCKDB;User Id=stock_user;Password=password;" />
+    
+    <!--<add key="DBConnStr1" value="Server=192.168.0.100;Database=STOCKDB;User Id=sa;Password=sasasa;" />-->
+    <add key="DATE_INTERVAL" value="3" />
+    <add key="ClientSettingsProvider.ServiceUri" value="" />
+  </appSettings>
+  <system.web>
+    <membership defaultProvider="ClientAuthenticationMembershipProvider">
+      <providers>
+        <add name="ClientAuthenticationMembershipProvider" type="System.Web.ClientServices.Providers.ClientFormsAuthenticationMembershipProvider, System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" serviceUri="" />
+      </providers>
+    </membership>
+    <roleManager defaultProvider="ClientRoleProvider" enabled="true">
+      <providers>
+        <add name="ClientRoleProvider" type="System.Web.ClientServices.Providers.ClientRoleProvider, System.Web.Extensions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" serviceUri="" cacheTimeout="86400" />
+      </providers>
+    </roleManager>
+  </system.web>
+  <system.diagnostics>
+    <sources>
+      <!-- このセクションでは、My.Application.Log のログ構成を定義します。-->
+      <source name="DefaultSource" switchName="DefaultSwitch">
+        <listeners>
+          <add name="FileLog"/>
+          <!-- アプリケーション イベント ログに書き込むには、以下のセクションのコメントを解除します -->
+          <!--<add name="EventLog"/>-->
+        </listeners>
+      </source>
+    </sources>
+    <switches>
+      <add name="DefaultSwitch" value="Information" />
+    </switches>
+    <sharedListeners>
+      <add name="FileLog"
+           type="Microsoft.VisualBasic.Logging.FileLogTraceListener, Microsoft.VisualBasic, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"
+           initializeData="FileLogWriter"
+           location="LocalUserApplicationDirectory"
+           logFileCreationSchedule="Daily"/>
+      <!-- アプリケーション イベント ログに書き込むには、以下のセクションのコメントを解除して、APPLICATION_NAME をアプリケーション名に置き換えます -->
+      <!--<add name="EventLog" type="System.Diagnostics.EventLogTraceListener" initializeData="APPLICATION_NAME"/> -->
+    </sharedListeners>
+  </system.diagnostics>
+</configuration>

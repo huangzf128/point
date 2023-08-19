@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+
+{% block style %}
+	body {
+		margin-bottom:200px;
+		background-color: lightblue;
+	}
+{% endblock %}
+
+{% block content %}
+
+	<div class="text-center pt-4 h3">
+		<br/><br/>
+		カテゴリ管理
+	</div>
+	<!--menu highlights start-->
+	<div class="container pt-3">
+		<div class="row text-center ">
+
+		{% for category in categorys %}
+			<div class="col-6 col-md-3 py-3">
+				<a href="maint-product?id={{ category.id }}"> 
+					<img src="{{ category.image }}" class="img-fluid " alt="" style="border-radius:0.5rem">
+				</a>
+				<div class="h5 pt-3 font-weight-bolder">
+					<a name="link_modify" href="#" cid="{{ category.id }}">
+						<span>{{ category.name }}</span>
+						<i class="fa-solid fa-pen-to-square"></i>
+					</a>
+					<a class="ms-4" delete href="maint-category-delete?id={{ category.id }}">
+						<i class="fa-solid fa-trash-can"></i>
+					</a>
+				</div>
+			</div>
+		{% endfor %}
+
+		<div class="col-6 col-md-3 py-3 text-primary" >
+			<br/><br/>
+			<a id="link_add" href="#" class="align-middle h1">
+				<i class="fa-regular fa-square-plus text-primary"></i>
+			</a>
+			<br/>
+			カテゴリ追加
+		</div>
+
+		</div>
+	</div>
+
+<!--カテゴリ管理 trigger Modal-->
+<div class="modal fade" id="category_maint" aria-labelledby="staticBackdropLabel">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content" style="background-color:rgba(255,255,255,0.95)">
+			<div class="modal-header">
+				<h5 class="modal-title" id="staticBackdropLabel">カテゴリ管理</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+				</button>
+			</div>
+
+			<div class="modal-body">
+				<form action="maint-category-add" method="post" enctype="multipart/form-data">
+					<input type="hidden" id="cid" name="cid" />
+					<div class="col col-md-10 py-3">
+						<label id="modal-title" for="formFileLg" class="form-label float-start">カテゴリ画像</label>
+						<input class="form-control form-control-sm" id="formFileLg" type="file"  name="image"/>
+					</div>
+					<div class="col col-md-10 py-3">
+						<label for="name" class="form-label float-start">カテゴリ名</label>
+						<input type="text" class="form-control" id="name" name="name" placeholder="" required><br/>
+		
+						<button class="btn btn-primary btn-block float-start">登録</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!--カテゴリ管理 trigger Model ends-->	
+{% endblock %}
+
+{% block script %}
+
+$(".modal").on("shown.bs.modal", function(){
+	if ($('#cid').val()) {
+		$('h5#staticBackdropLabel').text("カテゴリ変更");
+	} else {
+		$('h5#staticBackdropLabel').text("カテゴリ追加");
+		$('#cid').val('');
+	}
+});
+
+$('.modal').on('hidden.bs.modal', function () {
+    $(this).find('form').trigger('reset');
+});
+
+$('#link_add').click(function(){
+	$('#category_maint').modal('show');
+});
+
+$('a[name=link_modify]').click(function(){
+	$('#cid').val($(this).attr('cid'));
+	$('#name').val($(this).children().text());
+	$('#category_maint').modal('show');
+});
+
+{% if error is defined %}
+	$('#signup').modal('show');
+	alert('" . {{error}} . "');
+{% endif %}
+
+
+{% if error_login is defined %}
+	$('#login').modal('show');
+	alert('" . {{error_login}} . "');
+{% endif %}
+
+$('a[delete]').on('click', function () {
+	return confirm('商品を削除します。よろしいですか?');
+});
+
+{% endblock %}

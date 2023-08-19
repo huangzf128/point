@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid mt-5 pt-5" id="content" style="margin-bottom:200px">
+            <div class="col-md-8 mx-auto">
+                <div class="jumbotron text-center">
+                      <h3>ご注文いただき、誠にありがとうございます。</h3>
+					 	<p class="text-left px-5">
+							注文番号: <p class="text-primary"> {{ orderid }} </p><br/>
+							2営業日以内、担当者よりご連絡をさせていただきます。<br/>
+							今しばらくお待ちくださいますようよろしくお願い申し上げます。<br/><br/>
+							※サイトの右上のアイコンから、注文履歴の確認ができます。<br/>
+						</p> 
+					  <hr>
+                    <p> <a href="product">ショッピングを続ける</a> </p>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

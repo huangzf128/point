@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block style %}
+body {
+	background-color: lightblue;
+}
+{% endblock %}
+
+
+{% block content %}
+<div class="container" style="margin-top:65px">
+	<!--jumbutron start-->
+	<div class="jumbotron text-center">
+		<h1>ユーザー管理</h1>
+	</div>
+	<!--jumbutron ends-->
+	<!--breadcrumb start-->
+	<!--breadcrumb end-->
+	<hr />
+	<!--menu list-->
+
+	<div>
+		<table class="table table-striped">
+			<tr>
+				<td>メール</td>
+				<td>名前</td>
+				<td>電話番号</td>
+			</tr>
+			{% for user in users %}
+			<tr>
+				<td>
+					{{ user.email_id }}
+				</td>
+				<td>
+					{{ user.first_name }} {{ user.last_name }}
+				</td>
+				<td>
+					{{ user.phone }}
+				</td>
+			</tr>
+			{% endfor %}
+	
+		</table>
+	</div>
+
+<br/><br/><br/>
+</div><!-- end container -->
+
+{% endblock %}
+
+{% block script %}
+
+
+
+{% endblock %}

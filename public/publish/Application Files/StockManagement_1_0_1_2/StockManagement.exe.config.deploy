@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <configSections>
+        <sectionGroup name="userSettings" type="System.Configuration.UserSettingsGroup, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" >
+            <section name="StockManagement.My.MySettings" type="System.Configuration.ClientSettingsSection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" allowExeDefinition="MachineToLocalUser" requirePermission="false" />
+        </sectionGroup>
+    </configSections>
+    <startup>
+        <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.7.2" />
+    </startup>
+    <userSettings>
+        <StockManagement.My.MySettings>
+            <setting name="OrderCsv" serializeAs="String">
+                <value />
+            </setting>
+            <setting name="OrderOutput" serializeAs="String">
+                <value />
+            </setting>
+        </StockManagement.My.MySettings>
+    </userSettings>
+  <appSettings>
+    <add key="DBConnStr1" value="Server=JPONSRV;Database=STOCKDB;User Id=stock_user;Password=password;"/>
+    <add key="DBConnStr" value="Server=192.168.0.100\SQLEXPRESS;Database=STOCKDB;User Id=sa;Password=sasasa;"/>
+    <add key="DATE_INTERVAL" value="3"/>
+  </appSettings>
+</configuration>

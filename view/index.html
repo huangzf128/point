@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block style %}
+	body {
+		margin-bottom:200px
+	}
+{% endblock %}
+
+{% block content %}
+	<div id="content">
+		<div id="bg" class=" ">
+			<div class="container" style="padding-top:100px">
+				<div class="mx-auto p-5 text-white" id="banner_content" style="border-radius: 0.5rem;">
+					<h5 style="text-align: left;margin:auto;overflow-wrap: anywhere;">BPOINTNOUKIは、すべてのお客様を尊重し、またすべてのお取引先様に感謝し、
+						素晴らしい商品がお客様の元に届き、「喜び」と「感謝」が広く提供されますよう、人と人をつなぐ橋となります。
+					</h5>
+					<br/>
+					<h5>お客様とお取引先様の繁栄のため、常に双方に寄り添うような存在を目指してまいります。</h5>
+					<br/>
+					<a href="product" class="btn btn-warning btn-lg text-white">ショッピング</a>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<div class="text-center pt-4 h3">
+		* B-POINT農機へ ようこそ *
+	</div>
+	<!--menu highlights start-->
+	<div class="container pt-3">
+		<div class="row text-center ">
+
+		{% for category in categorys %}
+			<div class="col-6 col-md-3 py-3">
+				<a href="product?id={{ category.id }}"> 
+					<img src="{{ category.image }}" class="img-fluid " alt="" style="border-radius:0.5rem">
+					<div class="h5 pt-3 font-weight-bolder">
+						{{ category.name }}
+					</div>
+				</a>
+			</div>
+		{% endfor %}
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+
+{% if error is defined %}
+	$('#signup').modal('show');
+	alert('" . {{error}} . "');
+{% endif %}
+
+
+{% if error_login is defined %}
+	$('#login').modal('show');
+	alert('" . {{error_login}} . "');
+{% endif %}
+
+{% endblock %}
