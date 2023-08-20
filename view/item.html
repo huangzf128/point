@@ -1,0 +1,199 @@
+{% extends "layout.html" %}
+
+{% block link %}
+<link rel="stylesheet" href="css/menutree.css?{{tm}}">
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+	<ul class="breadcrumb">
+		<li><a href="/">スタートメニュー</a> <span class="divider">&gt;</span></li>
+		<li class=active>商品管理</li>
+	</ul>
+
+	<div class="col">
+
+		<div class="card">
+			<div class="filter">
+				<!-- <button id="btn-add" type="button" class="btn btn-primary btn-sm me-3">商品登録</button> -->
+				<a id="btn-add" class="icon text-primary" href="#" >商品登録</a>
+
+			</div>
+			<div class="card-body">
+				<h5 class="card-title">商品一覧</h5>
+
+				<!-- Table with stripped rows -->
+				<table class="table table-sm table-striped" data-show-columns="true" data-search="true" 
+						data-pagination="true" data-page-size="{{settings.pagesize}}" data-mobile-responsive="true" data-check-on-init="true">
+					<colgroup>
+						<col class="col-md-1">
+						<col class="col-md-2">
+						<!-- <col class="col-md-2"> -->
+						<col class="col-md-1"><!-- 価格 -->
+						<col class="col-md-1">
+						<col class="col-md-1">
+						<col class="col-md-1">
+						<col class="col-md-1">
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col" data-field="serial" data-sortable="true">商品番号</th>
+							<th scope="col" data-field="itemName" data-sortable="true">商品名</th>
+							<!-- <th scope="col" data-field="categoryName" >分類</th> -->
+							<th scope="col" data-field="price">価格</th>
+							<th scope="col" data-field="size">サイズ</th>
+							<th scope="col" data-field="unit">単位</th>
+							<th scope="col" data-field="weight">重さ</th>
+							<th scope="col" data-visible="false" data-searchable="false">登録日</th>
+							<th scope="col" data-visible="false" data-searchable="false">更新日</th>
+							<th data-formatter='Formatter.removemodify' data-align="center" data-events="operateEvents" data-cell-style="cellStyle">操作</th>
+							<th scope="col" data-field="id" data-visible="false" data-searchable="false">商品ID</th>
+							<th scope="col" data-field="categoryId" data-visible="false" data-searchable="false">分類ID</th>
+							<th scope="col" data-field="deleteFlag" data-visible="false" data-searchable="false"></th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for item in items %}
+						<tr>
+							<td>{{ item.serial}}</td>
+							<td>{{ item.itemName}}</td>
+							<!-- <td>{{ item.categoryName}}</td> -->
+							<td>{{ item.price}}</td>
+							<td>{{ item.size}}</td>
+							<td>{{ item.unit}}</td>
+							<td>{{ item.weight}}</td>
+							<td>{{ item.insertDt}}</td>
+							<td>{{ item.updateDt}}</td>
+							<td></td>
+							<td>{{ item.id }}</td>
+							<td>{{ item.categoryId }}</td>
+							<td>{{ item.deleteFlag }}</td>
+						</tr>
+						{% endfor %}
+
+					</tbody>
+				</table>
+				<!-- End Table with stripped rows -->
+
+			</div>
+		</div>
+	</div>
+	<form id="frm-modify" method="post" action="" >
+		<input class="form-control" id="id" name="id" type="hidden" />
+		<!-- Modal -->
+		<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staticBackdropLabel">商品情報</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body row">
+						<div class="mb-3 form-floating">
+							<input class="form-control" id="serial" name="serial" placeholder="" >
+							<label for="serial">商品番号</label>
+						</div>
+						<div class="mb-3 form-floating">
+							<input class="form-control" id="itemName" name="itemName" placeholder="" >
+							<label for="itemName">商品名</label>
+						</div>
+						<div class="col-6 mb-3 form-floating">
+							<input class="form-control" type="number" id="price" name="price" placeholder="">
+							<label for="price" class="form-label">価格</label>
+						</div>
+						<div class="col-6 mb-3 form-floating">
+							<input class="form-control" id="weight" name="weight" placeholder="">
+							<label for="weight" class="form-label">重さ</label>
+						</div>
+						<div class="col-6 mb-3 form-floating">
+							<input class="form-control" id="size" name="size" placeholder="">
+							<label for="size" class="form-label">サイズ</label>
+						</div>
+						<div class="col-6 mb-3 form-floating">
+							<input class="form-control" id="unit" name="unit" placeholder="">
+							<label for="unit" class="form-label">単位</label>
+						</div>
+						<div class="mb-3" hidden>
+							<label for="categoryId" class="form-label">分類：</label>
+							<select class="form-select " aria-label="Default select" id="categoryId" name="categoryId">
+								<option selected> </option>
+								{% for category in categorys %}
+								<option value="{{ category.id }}">{{ category.categoryName }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">閉じる</button>
+						<button type="submit" class="btn btn-primary btn-sm" id="modal-btn-confirm">確　定</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<form id="frm" method="post" action="">
+		<input id="idDel" name="id" type="hidden" />
+	</form>
+
+</div><!-- end container -->
+{% endblock %}
+
+
+{% block script %}
+<script>
+	operateEvents = {
+		'click .remove': function (e, value, row, index) {
+			if (confirm("削除します。よろしいですか？")) {
+				$('#idDel').val(row.id);
+				$("#frm").attr("action", "item/remove").submit();
+			}
+		},
+		'click .modify': function (e, value, row, index) {
+			
+			$('#staticBackdrop').modal('show');
+
+			$('#serial').val(row.serial);
+			$('#serial').prop('readonly', true);
+			$('#itemName').val(row.itemName);
+			$('#price').val(row.price);
+			$('#size').val(row.size);
+			$('#weight').val(row.weight);
+			$('#unit').val(row.unit);
+			$('#categoryId').val(row.categoryId);
+			$('#id').val(row.id);
+			$("#frm-modify").attr("action", "item/modify");
+		}
+	}
+
+	$(function () {
+		$('table').bootstrapTable()
+		binding();
+
+		gValidator = $('#frm-modify').validate(validator_setting.addRule({
+			serial: 	{ required: true, alphaNumSymbol: true},
+			itemName: 	{ required: true},
+		}));
+	})
+
+	function binding() {
+
+		$("#btn-add").click(function () {
+			$("#frm-modify").attr("action", "item/add");
+			$('#staticBackdrop').modal('show');
+		});
+	}
+
+	function cellStyle(value, row, index) {
+		if (row.deleteFlag == "1") {
+			return { classes: "hide-delete" }
+		} else {
+			return { classes: "" }
+		}
+	}	
+</script>
+{% endblock %}

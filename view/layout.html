@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>在庫管理システム</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="在庫管理システム">
+<meta name="keywords" content="在庫管理システム">
+
+<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="vendor/bootstrap/css/bootstrap-table.min.css">
+
+<link rel="stylesheet" href="css/style.css?{{tm}}">
+
+{% block link %}
+{% endblock %}
+
+<style>
+
+{% block style %}
+{% endblock %}
+
+</style>
+</head>
+
+<body>
+	<header id="header" class="header fixed-top d-flex align-items-center">
+	{% include 'includes/header_menu.php' %}
+	</header>
+
+	 <!-- ======= Sidebar ======= -->
+	<aside id="sidebar" class="sidebar">
+		{% include 'includes/siderbar.php' %}
+	</aside>
+
+
+	<main id="main" class="main">
+	{% block content %}
+	{% endblock %}
+	</main>
+
+    <!--footer -->
+	{% include 'includes/footer.php' %}
+    <!--footer end-->	
+</body>
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/jquery-validation/jquery.validate.min.js"></script>
+<script src="js/jquery-validation/additional-methods.min.js"></script>
+<script src="js/jquery-validation/messages_ja.js"></script>
+
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap-table.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap-table-mobile.min.js"></script>
+<script src="js/main.js?{{tm}}"></script>
+<script src="js/common.js?{{tm}}"></script>
+{% block component %}
+{% endblock %}
+
+<script>
+
+	var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+	var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+		return new bootstrap.Popover(popoverTriggerEl, {delay: { "hide": 3000 }})
+	})
+
+	$(document).ready(function () {
+
+		
+	});
+
+	function sendAjax(url, data, callback) {
+		$.ajax({
+			url: url,
+			type:'POST',
+			data : data,
+			timeout: 5000,
+		}).done(function(data) {
+			callback(data);
+		}).fail(function(XMLHttpRequest, textStatus, errorThrown) {
+			// alert("error");
+		})
+	}
+</script>
+{% block script %}
+{% endblock %}
+
+</html>

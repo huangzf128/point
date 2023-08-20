@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+
+{% block link %}
+<link rel="stylesheet" href="css/menutree.css?{{tm}}">
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+	<ul class="breadcrumb">
+		<li><a href="">スタートメニュー</a> <span class="divider">&gt;</span></li>
+		<li class=active>分類管理</li>
+	</ul>
+
+	<div class="card info-card sales-card">
+		<div class="filter">
+			<a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+			<ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+				<li class="dropdown-header text-start">
+				<h6>アクション</h6>
+				</li>
+
+				<li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">登録</a></li>
+				<li><a class="dropdown-item" href="#">変更</a></li>
+				<li><a class="dropdown-item" href="#">削除</a></li>
+			</ul>
+		</div>
+		<div class="card-body">
+			<h5 class="card-title">分類</h5>
+			<div class="d-flex align-items-center">
+				<ul id="myUL">
+					<li> <span class="box">分類一覧 </span>
+						<ul class="nested active">
+							{% for category in categorys %}
+							<li> {{ category.categoryName }}</li>
+							{% endfor %}
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<form id="frm" method="post" action="">
+		<!-- Modal -->
+		<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staticBackdropLabel">分類登録</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<label for="categoryname" class="form-label">分類名：</label>
+						<input class="form-control" id="categoryname" name="categoryname" />
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary btn-sm" id="btn-add">登録</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+
+</div><!-- end container -->
+{% endblock %}
+
+
+{% block script %}
+<script>
+var toggler = document.getElementsByClassName("box");
+var i;
+for (i = 0; i < toggler.length; i++) {
+	toggler[i].addEventListener("click", function () {
+		this.parentElement.querySelector(".nested").classList.toggle("active");
+		this.classList.toggle("check-box");
+	});
+} 
+
+$("#btn-add").click(function() {
+	let frm = $("#frm");
+	frm.attr("action", "category/add");
+	frm.submit();
+});
+
+$('.modal').on('shown.bs.modal', function () {
+    $('#categoryname').focus();
+});
+
+</script>
+{% endblock %}

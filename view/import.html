@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+
+{% block link %}
+<link rel="stylesheet" href="css/menutree.css?{{tm}}">
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+	<ul class="breadcrumb">
+		<li><a href="">スタートメニュー</a> <span class="divider">&gt;</span></li>
+		<li class=active>取込</li>
+	</ul>
+
+	<div class="col">
+		{% include 'includes/toast.php' %}
+
+		<div class="card">
+			<div class="filter">
+			</div>
+			<div class="card-body">
+				<h5 class="card-title">取込</h5>
+				<form action="import/item" method="post" enctype="multipart/form-data">
+					<div class="row mb-3">
+						<label for="itemFile" class="col-form-label text-primary">商品マスタ：</label>
+						<div class="col-10 col-sm-6">
+							<input class="form-control" type="file" id="itemFile" name="itemFile">
+						</div>
+						<div class="col-10 col-sm-3">
+							<button id="btn-item" class="btn btn-primary btn-sm float-start me-3">商品取込</button>
+						</div>
+					</div>
+				</form>
+
+				<form action="import/customer" method="post" enctype="multipart/form-data">
+					<div class="row mb-3">
+						<label for="customerFile" class="col-form-label text-primary">取引先マスタ：</label>
+						<div class="col-10 col-sm-6">
+							<input class="form-control" type="file" id="customerFile" name="customerFile">
+						</div>
+						<div class="col-10 col-sm-3">
+							<button id="btn-customer" class="btn btn-primary btn-sm float-start me-3">取引先取込</button>
+						</div>
+					</div>
+				</form>
+
+			</div>
+		</div>
+
+	</div>
+
+</div><!-- end container -->
+<br />
+
+<form id="frm" method="post" action="">
+	<input type="hidden" name="warehouseId" id="warehouseId" />
+	<input type="hidden" name="addData" id="addData" />
+	<input type="hidden" name="ymd" id="ymd" />
+</form>
+
+
+
+{% endblock %}
+
+
+{% block script %}
+<script>
+	const errMsg = "{{errMsg}}";
+	$(function () {
+
+		if (errMsg) {
+			$('.toast').toast('show');
+		}
+		binding();
+	})
+
+
+	function binding() {
+		$('#btn-item').click(function () {
+			if ($('#itemFile')[0].files.length == 0) {
+				alert("ファイルを選択してください。");
+				return;
+			}
+			$(this).parents('form').submit();
+		});
+
+		$('#btn-customer').click(function () {
+			if ($('#customerFile')[0].files.length == 0) {
+				alert("ファイルを選択してください。");
+				return;
+			}
+			$(this).parents('form').submit();
+		});
+	}
+
+</script>
+{% endblock %}

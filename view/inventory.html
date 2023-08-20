@@ -1,0 +1,211 @@
+{% extends "layout.html" %}
+
+{% block link %}
+<link rel="stylesheet" href="css/menutree.css?{{tm}}">
+{% endblock %}
+
+{% block style %}
+.inventory-select {
+float:left;
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+	<ul class="breadcrumb">
+		<li><a href="/">スタートメニュー</a> <span class="divider">&gt;</span></li>
+		<li class=active>在庫管理</li>
+	</ul>
+
+	<div class="col">
+
+		<div class="card">
+			<div class="filter">
+				<button id="btn-upd" type="button" class="btn btn-primary btn-sm me-3">在庫数更新</button>
+			</div>
+			<div class="card-body">
+				<h5 class="card-title">在庫商品一覧</h5>
+				<div class="col-lg-4 col-md-4 col-12 inventory-select">
+					<select class="form-select form-select-sm" aria-label="select example" id="warehouseId-sel" name="warehouseId">
+						<option value="" selected> 倉庫を選択してください。</option>
+						{% for warehouse in warehouses %}
+						<option value="{{ warehouse.id }}" {{ warehouse.id==warehouseId ? "selected" : "" }}>{{ warehouse.warehouseName }}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<table id="table-inventory" class="table table-striped table-sm" data-search="true"
+					data-pagination="true" data-page-size="{{settings.pagesize}}" data-maintain-meta-data="true" data-mobile-responsive="true" data-check-on-init="true">
+					<colgroup>
+						<col class="col-md-1">
+						<col class="col-md-1">
+						<col class="col-md-4">
+						<col class="col-md-2">
+						<col class="col-md-3">
+						<col class="col-md-1">
+					</colgroup>
+					<thead>
+						<tr>
+							<th data-field="state" data-checkbox="true">選択</th>
+							<th scope="col" data-field="serial" data-sortable="true">商品番号</th>
+							<th scope="col" data-field="itemName" data-sortable="true">商品名</th>
+							<th scope="col" data-field="quantity" data-sortable="true" data-events="inputEvents" data-formatter='quantityFormatter'>数量</th>
+							<th scope="col" data-field="updateDt" data-sortable="true">更新日</th>
+							<th data-formatter='Formatter.remove' data-align="center" data-events="operateEvents">操作</th>
+							<th scope="col" data-field="id" data-visible="false"></th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for inventory in inventorys %}
+						<tr>
+							<td class="text-center"></td>
+							<td>{{ inventory.serial }}</td>
+							<td>{{ inventory.itemName }}</td>
+							<td>{{ inventory.quantity}}</td>
+							<td>{{ inventory.updateDt}}</td>
+							<td></td>
+							<td>{{ inventory.id}}</td>
+						</tr>
+						{% endfor %}
+
+					</tbody>
+				</table>
+
+				<!-- End Table with stripped rows -->
+			</div>
+		</div>
+
+		<form id="frm" method="post" action="">
+			<input type="hidden" id="itemId" name="itemId" />
+			<input type="hidden" id="warehouseId" name="warehouseId" />
+			<input type="hidden" id="id" name="id" />
+			<input type="hidden" id="invupd" name="invupd" />
+		</form>
+
+		<div class="card">
+
+			<div class="card-body">
+				<h5 class="card-title">管理外商品一覧</h5>
+
+				<!-- Table with stripped rows -->
+				<table class="table table-striped table-sm caption-top" data-pagination="true" data-page-size="{{settings.pagesize}}" data-show-columns="true" data-search="true" data-mobile-responsive="true" data-check-on-init="true">
+					<colgroup>
+						<col class="col-md-2">
+						<col class="col-md-4">
+						<col class="col-md-2">
+						<col class="col-md-1">
+						<col class="col-md-2">
+						<col class="col-md-1">
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col" data-field="serial" data-sortable="true">商品番号</th>
+							<th scope="col" data-field="itemName" data-sortable="true">商品名</th>
+							<th scope="col" data-field="size">サイズ</th>
+							<th scope="col" data-field="unit">単位</th>
+							<th scope="col" data-field="weight" >重さ</th>
+							<th data-formatter='Formatter.add' data-align="center" data-events="operateEvents">操作</th>
+							<th scope="col" data-field="id" data-visible="false"></th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for item in items %}
+						<tr>
+							<td>{{ item.serial}}</td>
+							<td>{{ item.itemName}}</td>
+							<td>{{ item.size}}</td>
+							<td>{{ item.unit}}</td>
+							<td>{{ item.weight}}</td>
+							<td></td>
+							<td>{{ item.id}}</td>
+						</tr>
+						{% endfor %}
+
+					</tbody>
+				</table>
+
+				<!-- End Table with stripped rows -->
+			</div>
+		</div>
+	</div>
+</div><!-- end container -->
+<br />
+{% endblock %}
+
+
+{% block script %}
+<script>
+
+	operateEvents = {
+		'click .add': function (e, value, row, index) {
+			if (confirm("商品[" + row.itemName + "]を倉庫に追加します。よろしいですか？")) {
+				$('#itemId').val(row.id);
+				$('#warehouseId').val($('#warehouseId-sel').val());
+
+				$("#frm").attr("action", "inventory/add").submit();
+			}
+		},
+		'click .remove': function (e, value, row, index) {
+			if (confirm("商品[" + row.itemName + "]を倉庫から削除します。よろしいですか？")) {
+				$('#id').val(row.id);
+				$('#warehouseId').val($('#warehouseId-sel').val());
+
+				$("#frm").attr("action", "inventory/remove").submit();
+			}
+		}
+	}
+
+	inputEvents = {
+		'change :input': function (e, value, row, index) {
+			row.quantity = $(e.target).prop('value');
+		}
+	};
+
+	function quantityFormatter(value, row, index) {
+		return [
+			'<input type="number" min="0" class="form-control form-control-sm" name="quantity" index=' + index + ' value="' + row.quantity + '"/>'
+		].join('')
+	}
+
+	function getSelections() {
+		return $.map($('#table-inventory').bootstrapTable('getSelections'), function (row) {
+			return { "id": row.id, "quantity": row.quantity };
+		})
+	}
+
+	$(function () {
+		$('table').bootstrapTable();
+
+		$('#table-inventory').on('focus', 'input[name=quantity]', function () {
+			$('#table-inventory').bootstrapTable('check', $(this).attr('index'));
+		});
+
+		// $('#table-inventory').on('click-cell.bs.table', function (e, field, value, row, $el) {
+		// 	if (field === "quantity") {
+		// 		$(this).bootstrapTable('check', $($el).parent().data('index'));
+		// 	}
+		// });
+
+		$('#warehouseId-sel').change(function () {
+			const id = $(this).val();
+			if (id == '') {
+				location = "inventory";
+				return;
+			};
+
+			$('#warehouseId').val(id);
+			$("#frm").attr("action", "inventory").attr("method", "get").submit();
+		});
+
+		$('#btn-upd').click(function () {
+			let selectDatas = getSelections();
+			if (selectDatas.length) {
+				$('#invupd').val(JSON.stringify(selectDatas));
+				$('#warehouseId').val($('#warehouseId-sel').val());
+				
+				$("#frm").attr("action", "inventory/modify").submit();
+			}
+		});
+	})
+</script>
+{% endblock %}

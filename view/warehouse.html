@@ -1,0 +1,158 @@
+{% extends "layout.html" %}
+
+{% block link %}
+<link rel="stylesheet" href="css/menutree.css?{{tm}}">
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+	<ul class="breadcrumb">
+		<li><a href="/">スタートメニュー</a> <span class="divider">&gt;</span></li>
+		<li class=active>倉庫管理</li>
+	</ul>
+
+	<div class="card info-card sales-card">
+		<div class="filter">
+			<button id="btn-add" type="button" class="btn btn-primary btn-sm me-3" >倉庫登録</button>
+		</div>
+		<div class="card-body">
+			<h5 class="card-title">倉庫一覧</h5>
+			<table id="tab" class="table table-striped table-sm" data-mobile-responsive="true" data-check-on-init="false">
+				<colgroup>
+					<col class="col-md-3">
+					<col class="col-md-4">
+					<col class="col-md-2">
+					<col class="col-md-1">
+					<col class="col-md-1">
+				</colgroup>
+				<thead>
+					<tr>
+						<th scope="col" data-field="warehouseName" >倉庫名</th>
+						<th scope="col" data-field="address" >住所</th>
+						<th scope="col" data-field="tel" >電話</th>
+						<th scope="col" >タイプ</th>
+						<th data-formatter='Formatter.removemodify' data-align="center" data-events="operateEvents" data-cell-style="cellStyle">操作</th>
+						<th scope="col" data-field="id" data-visible="false"></th>
+						<th scope="col" data-field="type" data-visible="false"></th>
+						<th scope="col" data-field="deleteFlag" data-visible="false"></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for warehouse in warehouses %}
+					<tr>
+						<td>{{ warehouse.warehouseName}}</td>
+						<td>{{ warehouse.address}}</td>
+						<td>{{ warehouse.tel}}</td>
+						<td>{{ warehouse.type | default(1) | getWarehouseType }}</td>
+						<td></td>
+						<td>{{ warehouse.id}}</td>
+						<td>{{ warehouse.type}}</td>
+						<td>{{ warehouse.deleteFlag}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<!-- End Table with stripped rows -->	
+
+		</div>
+	</div>
+
+	<form id="frm" method="post" action="">
+		<input class="form-control" id="id" name="id" type="hidden"/>
+		<!-- Modal -->
+		<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staticBackdropLabel">倉庫情報</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<label for="warehouseName" class="form-label">倉庫名：</label>
+						<input class="form-control" id="warehouseName" name="warehouseName" />
+
+						<label for="address" class="form-label">住所：</label>
+						<input class="form-control" id="address" name="address" />
+
+						<label for="tel" class="form-label">電話番号：</label>
+						<input type="text" class="form-control" id="tel" name="tel" />
+
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="type" id="type1" checked value="1">
+							<label class="form-check-label" for="type1">{{ 1 | getWarehouseType }}</label>
+						</div>
+
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="type" id="type2" value="2">
+							<label class="form-check-label" for="type2">{{ 2 | getWarehouseType }}</label>
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">閉じる</button>
+						<button type="button" class="btn btn-primary btn-sm" id="modal-btn-add">確　定</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+</div><!-- end container -->
+{% endblock %}
+
+
+{% block script %}
+<script>
+operateEvents = {
+	'click .remove': function (e, value, row, index) {
+		if (confirm("削除します。よろしいですか？")) {
+			$('#id').val(row.id);
+			let frm = $("#frm");
+			frm.attr("action", "warehouse/remove");
+			frm.submit();
+		}
+	},
+	'click .modify': function (e, value, row, index) {
+		$('#staticBackdrop').modal('show');
+		$('#warehouseName').val(row.warehouseName);
+		$('#address').val(row.address);
+		$('#tel').val(row.tel);
+		$('#type' + row.type).prop('checked', true);
+		$('#id').val(row.id);
+		$("#frm").attr("action", "warehouse/modify");
+	}
+}
+
+$(function () {
+	$('#tab').bootstrapTable();
+
+	gValidator = $('#frm').validate(validator_setting.addRule({
+			tel: 	{ required: false, tel: true},
+			warehouseName: 	{ required: true},
+			address: 		{ required: true},
+		}));
+
+
+	$('#btn-add').click(function(){
+		$("#frm").attr("action", "warehouse/add");
+		$('#staticBackdrop').modal('show');
+	});
+
+	$('#modal-btn-add').click(function() {
+		$("#frm").submit();
+	});
+});
+
+function cellStyle(value, row, index) {
+	if (row.deleteFlag == 1) {
+		return { classes: "hide" }
+	} else {
+		return { classes: ""}			
+	}
+}
+</script>
+{% endblock %}

@@ -1,0 +1,200 @@
+{% extends "layout.html" %}
+
+{% block link %}
+<link rel="stylesheet" href="css/menutree.css?{{tm}}">
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+	<ul class="breadcrumb">
+		<li><a href="">スタートメニュー</a> <span class="divider">&gt;</span></li>
+		<li class=active>取引先管理</li>
+	</ul>
+
+	<div class="card info-card sales-card">
+		<div class="filter">
+			<button id="btn-add" type="button" class="btn btn-primary btn-sm me-3" >取引先登録</button>
+		</div>
+		<div class="card-body">
+			<h5 class="card-title">取引先一覧</h5>
+
+			<div class="col-lg-2 col-md-2 col-12 inventory-select">
+				<select class="form-select form-select-sm" aria-label="select" id="kana-sel" value="{{kana}}">
+					<option value="" selected> かな </option>
+					{% for k in kanas %}
+					<option value="{{ k }}" {{ k==kana ? "selected" : "" }}>{{ k }}</option>
+					{% endfor %}
+				</select>
+			</div>
+
+			<table id="tab" class="table table-striped table-sm" data-search="true" data-mobile-responsive="true" data-check-on-init="false"
+					data-pagination="true" data-page-size="{{settings.pagesizelong}}">
+				<!-- <colgroup>
+					<col class="col-md-2">
+					<col class="col-md-1">
+					<col class="col-md-1">
+					<col class="col-md-3">
+					<col class="col-md-2">
+					<col class="col-md-2">
+					<col class="col-md-3">
+					<col class="col-md-1">
+				</colgroup> -->
+				<thead>
+					<tr>
+						<th scope="col" data-field="name" >取引先名</th>
+						<th scope="col" data-field="kana" >かな</th>
+						<th scope="col" data-field="managerName" >担当者名</th>
+						<th scope="col" data-field="postcode" >郵便番号</th>
+						<th scope="col" data-field="address" >住所</th>
+						<th scope="col" data-field="tel" >電話</th>
+						<th scope="col" data-field="fax" >FAX</th>
+						<th scope="col" data-field="remark" >備考</th>
+						<th data-formatter='Formatter.removemodify' data-align="center" data-events="operateEvents" data-cell-style="cellStyle">操作</th>
+						<th scope="col" data-field="id" data-visible="false"></th>
+						<th scope="col" data-field="deleteFlag" data-visible="false"></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for customer in customers %}
+					<tr>
+						<td>{{ customer.name}}</td>
+						<td>{{ customer.kana}}</td>
+						<td>{{ customer.managerName}}</td>
+						<td>{{ customer.postcode}}</td>
+						<td>{{ customer.address}}</td>
+						<td>{{ customer.tel}}</td>
+						<td>{{ customer.fax}}</td>
+						<td>{{ customer.remark}}</td>
+						<td></td>
+						<td>{{ customer.id}}</td>
+						<td>{{ customer.deleteFlag}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<!-- End Table with stripped rows -->	
+
+		</div>
+	</div>
+
+	<form id="frm" method="post" action="">
+		<input class="form-control" id="id" name="id" type="hidden"/>
+		<!-- Modal -->
+		<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staticBackdropLabel">取引先情報</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<label for="name" class="form-label">取引先名：</label>
+						<input class="form-control" id="name" name="name" />
+
+						<label for="kana" class="form-label">カナ：</label>
+						<select class="form-select form-select-sm" aria-label="select" id="kana" name="kana" value="{{kana}}">
+							<option value="" selected> </option>
+							{% for k in kanas %}
+							<option value="{{ k }}">{{ k }}</option>
+							{% endfor %}
+						</select>
+
+						<label for="managerName" class="form-label">担当者名：</label>
+						<input class="form-control" id="managerName" name="managerName" />
+
+						<label for="address" class="form-label">郵便番号：</label>
+						<input class="form-control" id="postcode" name="postcode" type="tel"/>
+
+						<label for="address" class="form-label">住所：</label>
+						<input class="form-control" id="address" name="address" />
+
+						<label for="tel" class="form-label">電話番号：</label>
+						<input class="form-control" id="tel" name="tel" type="tel"/>
+
+						<label for="fax" class="form-label">FAX：</label>
+						<input class="form-control" id="fax" name="fax" type="tel"/>
+
+						<label for="remark" class="form-label">備考：</label>
+						<input class="form-control" id="remark" name="remark" type="text"/>
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">閉じる</button>
+						<button type="button" class="btn btn-primary btn-sm" id="modal-btn-confirm">確　定</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+</div><!-- end container -->
+{% endblock %}
+
+
+{% block script %}
+<script>
+operateEvents = {
+	'click .remove': function (e, value, row, index) {
+		if (confirm("削除します。よろしいですか？")) {
+			$('#id').val(row.id);
+			$("#frm").attr("action", "customer/remove").submit();
+		}
+	},
+	'click .modify': function (e, value, row, index) {
+		$('#staticBackdrop').modal('show');
+		$('#name').val(row.name);
+		$('#managerName').val(row.managerName);
+		$('#postcode').val(row.postcode);
+		$('#address').val(row.address);
+		$('#tel').val(row.tel);
+		$('#fax').val(row.fax);
+		$('#remark').val(row.remark);
+		$('#id').val(row.id);
+		$("#frm").attr("action", "customer/modify");
+		$('#kana').val(row.kana);
+	}
+}
+
+$(function () {
+	$('#tab').bootstrapTable();
+
+	binding();
+
+	gValidator = $('#frm').validate(validator_setting.addRule({
+		name: 		{ required: true},
+		kana: 		{ required: true},
+		postcode:   { zipCode: true},
+		tel: 		{ tel: true},
+		fax: 		{ tel: true}
+	}));	
+});
+
+function binding() {
+	$('#kana-sel').change(function() {
+		$('#kana').val(this.value);
+		$("#frm").attr("action", "customer").attr("method", "get").submit();
+	});
+
+	$('#btn-add').click(function(){
+		$("#frm").attr("action", "customer/add");
+		$('#staticBackdrop').modal('show');
+	});
+
+	$('#modal-btn-confirm').click(function() {
+		$("#frm").submit();
+	});
+}
+
+function cellStyle(value, row, index) {
+	if (row.deleteFlag == 1) {
+		return {classes: "hide"}
+	} else {
+		return {classes: ""}			
+	}
+}
+</script>
+{% endblock %}
