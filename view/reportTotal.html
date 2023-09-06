@@ -1,0 +1,300 @@
+{% extends "layout.html" %}
+
+{% block link %}
+<link rel="stylesheet" href="css/menutree.css?{{tm}}">
+{% endblock %}
+
+{% block style %}
+.card {
+	background: floralwhite;
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+	<ul class="breadcrumb">
+		<li><a href="">スタートメニュー</a> <span class="divider">&gt;</span></li>
+		<li class=active>帳票出力(月計)</li>
+	</ul>
+
+	<div class="col">
+
+		<div class="card">
+			<div class="filter">
+				<input type="month" class="form-select-sm float-start me-2 mb-2" style="width:120px;" min="2023-03" id="calendar" value="{{ym}}" />
+
+				<button id="btn-out-history" type="button" class="btn btn-primary btn-sm float-start me-3" >出庫履歴</button>
+			</div>
+			<div class="card-body row">
+				
+				<div class="col-10 col-md-3 mt-3">
+					<select class="form-select-sm float-start me-2" id="report-sel" style="width:auto;">
+						<option value=""> 帳票を選んでください</option>
+						<option value="1" {{ report==1 ? "selected" : "" }}>見積書</option>
+						<!-- <option value="2" {{ report==2 ? "selected" : "" }}>見積依頼書</option> -->
+						<!-- <option value="3" {{ report==3 ? "selected" : "" }}>注文書</option> -->
+						<option value="4" {{ report==4 ? "selected" : "" }}>請求書&送り状</option>
+						<option value="5" {{ report==5 ? "selected" : "" }}>納品書&受領書</option>
+                        <!-- <option value="6" {{ report==6 ? "selected" : "" }}>出荷証明書</option> -->
+					</select>
+				</div>
+				<div class="col-10 col-md-9 mt-3">
+					<button type="button" class="btn btn-success btn-sm float-start me-3 mb-2" id="btn-add-customer" data-bs-toggle="modal" 
+							data-bs-target="#customer-modal">取引先選択</button>
+					<span id="customerName">{{ customerName }}</span>
+				</div>
+			</div>
+		</div>
+
+		<div id="out-history" class="card" 
+		{{ invHistorys|length > 0 ? "" : "style='display:none;'" }}
+		>
+			<div class="filter">
+				<button type="button" class="btn btn-primary btn-sm float-start me-3" id="btn-history-addall">全追加</button>
+			</div>
+			<div class="card-body row">
+				<h5 class="card-title">出庫履歴一覧</h5>
+
+				<table id="tab-list" class="table table-striped table-sm" data-mobile-responsive="true" data-check-on-init="false">
+					<colgroup>
+						<col class="col-md-3">
+						<col class="col-md-3">
+						<col class="col-md-3">
+						<col class="col-md-2">
+						<col class="col-md-1">
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col" data-field="insertDt">入庫日時</th>
+							<th scope="col" data-field="updateDt">更新日時</th>
+							<th scope="col" data-field="customerId" >取引先</th>
+							<th scope="col" data-field="operatorId" >操作者</th>
+							<th data-formatter='Formatter.add' data-align="center" data-events="operateHistoryEvents" data-cell-style="cellStyle" >操作</th>
+							<th scope="col" data-field="id" data-visible="false"></th>
+							<th scope="col" data-field="userId" data-visible="false"></th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for inv in invHistorys %}
+						<tr>
+							<td>{{ inv.insertDt}}</td>
+							<td>{{ inv.updateDt}}</td>
+							<td>{{ inv.customerName}}</td>
+							<td>{{ inv.name}}</td>
+							<td></td>
+							<td>{{ inv.id}}</td>
+							<td>{{ inv.operatorId}}</td>
+						</tr>
+						{% endfor %}							
+					</tbody>						
+				</table>
+				<!-- End Table with stripped rows -->
+			</div>
+		</div>
+
+
+		<div id="item-detail" class="card">
+			<div class="filter">
+				<button id="btn-print" type="button" class="btn btn-primary btn-sm me-3">出力</button>
+			</div>
+
+			<div class="card-body">
+				<h5 class="card-title">出力商品一覧</h5>
+
+					<table id="tab-detail" class="table table-striped table-sm" data-mobile-responsive="true">
+						<colgroup>
+							<!-- <col class="col-md-2">
+							<col class="col-md-4">
+							<col class="col-md-2">
+							<col class="col-md-1">
+							<col class="col-md-2">
+							<col class="col-md-1"> -->
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col" data-field="serial" data-sortable="true">商品番号</th>
+								<th scope="col" data-field="itemName" data-sortable="true">商品名</th>
+								<th scope="col" data-field="size">サイズ</th>
+								<th scope="col" data-field="unit">単位</th>
+								<th scope="col" data-field="price">価格</th>
+								<th scope="col" data-field="quantity">数量</th>
+								<th scope="col" data-field="itemId" data-visible="false"></th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+			</div>
+		</div>
+
+	</div>
+</div><!-- end container -->
+<br />
+
+<form id="frm" method="post" action="">
+	<input type="hidden" name="ym" id="ym" value="{{ ym }}"/>
+	<input type="hidden" name="addData" id="addData" />
+	<input type="hidden" name="detailId" id="detailId"/>
+	<input type="hidden" name="reportId" id="reportId"/>
+	<input type="hidden" name="customerId" id="customerId" value="{{ customerId }}"/>
+</form>
+
+{% endblock %}
+
+
+{% block script %}
+<script>
+
+	var hideRowItem = [];
+	operateHistoryEvents = {
+		'click .add': function (e, value, row, index) {
+			sendAjax("report/getOutHistory", {id: row['id']}, function(datas) {
+
+				$(e.target).parents('td').eq(0).addClass('hide-added');
+
+				hideRowItem.push(row['id'] + "");
+				const datasOld = $('#tab-detail').bootstrapTable('getData');
+
+				const ary = mergeArray(datas, datasOld);
+				$('#tab-detail').bootstrapTable('load', ary);
+			});
+		}
+	}
+
+	function mergeArray(ary1, ary2) {
+		for (let i = 0; i < ary1.length; i++) {
+			const e1 = ary1[i];
+			const e2 = getElementFromAry(ary2, {"itemId": e1["itemId"], "price": e1["price"]});
+			if (e2 == null) {
+				ary2.push(e1);
+			} else {
+				e2["quantity"] = (+e2["quantity"]) + (+e1["quantity"]);
+			}
+		}
+		return ary2;
+	}
+
+	function getElementFromAry(ary, clue) {
+		for (let i = 0; i < ary.length; i++) {
+			const e = ary[i];
+			if (isTarget(e, clue)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	function isTarget(e, clue) {
+		for (var key in clue) {
+			if (clue.hasOwnProperty(key)){
+				if (e[key] != clue[key]) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	function getSelections() {
+		return $.map($('#tab-detail').bootstrapTable('getData'), function (row) {
+			return {"id": row.id, "serial": row.serial, "itemId": row.itemId, "itemName": row.itemName, "quantity": row.quantity, "price": row.price, "size": row.size, "unit": row.unit };
+		})
+	}
+
+	$(function () {
+		$('#tab-list').bootstrapTable();
+		$('#tab-detail').bootstrapTable();
+
+		binding();
+	})
+
+	function binding() {
+
+		$('#btn-out-history').click(function() {
+			if ($('#tab-detail').bootstrapTable('getData').length > 0 &&
+				!confirm("入力された情報がなくなります。よろしいですか？")) {
+				return;
+			}
+
+			const reportId = $('#report-sel').val();
+			if (!reportId) {
+				alert("帳票を選んでください。");
+				return;
+			}
+
+			$('#ym').val($('#calendar').val());
+			if(!$('#ym').val()) {
+				alert("年月を選択してください。");
+				return;
+			}
+
+			if(!$('#customerId').val()) {
+				alert("取引先を選択してください。");
+				return;
+			}
+
+			$('#reportId').val(reportId);
+			$("#frm").attr("action", "reportTotal").attr("method", "get").submit();			
+		});
+
+		$('#btn-history-addall').click(function() {
+			if ($('#tab-detail').bootstrapTable('getData').length > 0 &&
+				!confirm("入力された情報がなくなります。よろしいですか？")) {
+				return;
+			}
+			sendAjax("report/getOutHistoryDetailRange", {ym: $('#ym').val(), customerId: $('#customerId').val()}, function(data) {
+
+				$('#tab-detail').bootstrapTable('load', data);
+				hideRowItem = [];
+				$.map($('#tab-list').bootstrapTable('getData'), function (row) {
+					hideRowItem.push(row.id + '');
+				})
+				$('#tab-list').bootstrapTable('resetSearch');
+			});
+		});
+
+		$('#btn-print').click(function() {
+
+			const reportId = $('#report-sel').val();
+			if (!reportId) {
+				alert("帳票を選んでください。");
+				return;
+			}
+
+			if (!$('#customerId').val()) {
+				alert("取引先を選んでください。");
+				return;
+			}			
+
+			const tabData = getSelections();
+			if (tabData.length == 0) {
+				return;
+			}
+
+			$('#addData').val(JSON.stringify(tabData));
+			$('#reportId').val(reportId);
+			$("#frm").attr("action", "report/print").submit();
+		});
+	}
+
+	function customerCallback(data) {
+		$('#customerName').text(data['name']);
+		$('#customerId').val(data['id']);
+	}
+
+	function cellStyle(value, row, index) {
+
+		if ($.inArray(row['id'], hideRowItem) != -1) {
+			return { classes: "hide-added" }
+		} else {
+			return { classes: "" }
+		}
+	}
+	
+</script>
+{% endblock %}
+
+{% block component %}
+	{% include 'includes/customer_modal.php' %}
+{% endblock %}

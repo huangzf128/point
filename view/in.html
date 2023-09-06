@@ -1,0 +1,251 @@
+{% extends "layout.html" %}
+
+{% block link %}
+<link rel="stylesheet" href="css/menutree.css?{{tm}}">
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+	<ul class="breadcrumb">
+		<li><a href="">スタートメニュー</a> <span class="divider">&gt;</span></li>
+		<li class=active>入庫</li>
+	</ul>
+
+	<div class="col">
+
+		<div class="card">
+			<div class="filter">
+				<span class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="left" title="先に倉庫を選んでください。" >
+					<button type="button" class="btn btn-secondary btn-sm float-start me-3" id="btn-inv-add">新規入庫</button>
+				</span>
+			</div>
+
+			<div class="card-body row">
+
+				<div class="col-10 col-md-12 my-3">
+					<select class="form-select-sm float-start me-2 mb-2" id="warehouseId-sel" style="width:auto;">
+						<option value=""> 倉庫を選んでください</option>
+						{% for warehouse in warehouses %}
+						<option value="{{ warehouse.id }}" {{ warehouse.id==warehouseId ? "selected" : "" }}>{{ warehouse.warehouseName }}</option>
+						{% endfor %}
+					</select>
+
+					<input type="month" class="form-select-sm float-start me-2 mb-2" style="width:120px;" min="2023-03-01" id="calendar" value="{{ym}}" />
+				</div>
+				
+				<h6>入庫履歴一覧</h6>
+				<table id="tab-list" class="table table-striped table-sm" data-mobile-responsive="true" data-check-on-init="false">
+					<colgroup>
+						<col class="col-md-4">
+						<col class="col-md-4">
+						<col class="col-md-2">
+						<col class="col-md-1">
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col" data-field="insertDt">入庫日時</th>
+							<th scope="col" data-field="updateDt">更新日時</th>
+							<th scope="col" data-field="operatorId" >操作者</th>
+							<th data-formatter='Formatter.remove' data-align="center" data-events="operateEvents">操作</th>
+							<th scope="col" data-field="id" data-visible="false"></th>
+							<th scope="col" data-field="userId" data-visible="false"></th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for inv in invHistorys %}
+						<tr>
+							<td>{{ inv.insertDt}}</td>
+							<td>{{ inv.updateDt}}</td>
+							<td>{{ inv.name}}</td>
+							<td></td>
+							<td>{{ inv.id}}</td>
+							<td>{{ inv.operatorId}}</td>
+						</tr>
+						{% endfor %}						
+					</tbody>
+				</table>
+				<!-- End Table with stripped rows -->
+			</div>
+		</div>
+
+
+		<div id="item-detail" class="card"
+			{{ invItems|length > 0 ? "" : "style='display:none;'" }}
+		>
+			<div class="filter">
+				<button id="btn-upd" type="button" class="btn btn-primary btn-sm me-3">入庫確定</button>
+			</div>
+
+			<div class="card-body">
+				<h5 class="card-title">入庫商品一覧</h5>
+
+				<span id="control-add" style="display: none;">
+					<button type="button" class="btn btn-success btn-sm float-start me-3 mb-2" id="btn-add-item" data-bs-toggle="modal" 
+							data-bs-target="#item-modal">商品追加</button>
+					<label class="float-start">入庫日：</label>
+					<input type="date" class="form-select-sm float-start me-2 mb-2" style="width:120px;" min="2023-03-01" id="calendar-ymd" value="{{ymd}}" />
+				</span>
+				<table id="tab-detail" class="table table-striped table-sm" data-mobile-responsive="true">
+					<colgroup>
+						<col class="col-md-2">
+						<col class="col-md-6">
+						<col class="col-md-2">
+						<col class="col-md-2">
+					</colgroup>
+					<thead>
+						<tr>
+							<th scope="col" data-field="serial" data-sortable="true">商品番号</th>
+							<th scope="col" data-field="itemName" data-sortable="true">商品名</th>
+							<th scope="col" data-field="quantityDb" data-sortable="true">現入庫数</th>
+							<th scope="col" data-field="quantity" data-events="inputEvents" data-formatter='inputFormatter'>入庫数</th>
+							<th scope="col" data-field="id" data-visible="false"></th>
+							<th scope="col" data-field="itemId" data-visible="false"></th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for item in invItems %}
+						<tr>
+							<td>{{ item.serial}}</td>
+							<td>{{ item.itemName}}</td>
+							<td>{{ item.quantity}}</td>
+							<td>{{ item.quantity}}</td>
+							<td>{{ item.id}}</td>
+							<td>{{ item.itemId}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+	</div>
+</div><!-- end container -->
+<br />
+
+<form id="frm" method="post" action="">
+	<input type="hidden" name="warehouseId" id="warehouseId" value="{{ warehouseId }}"/>
+	<input type="hidden" name="ym" id="ym" value="{{ ym }}"/>
+	<input type="hidden" name="ymd" id="ymd" value="{{ ymd }}"/>
+	<input type="hidden" name="addData" id="addData" />
+	<input type="hidden" name="detailId" id="detailId"/>
+</form>
+
+<input type="hidden" id="mode"/>
+
+{% endblock %}
+
+
+{% block script %}
+<script>
+	
+	operateEvents = {
+		'click .remove': function (e, value, row, index) {
+			if (!confirm("入庫履歴を削除します？よろしいですか？")) {
+				return;
+			}
+			$('#detailId').val(row.id);
+			$("#frm").attr("action", "in/remove").attr("method", "post").submit();
+		},
+	}
+
+	function getSelections() {
+		return $.map($('#tab-detail').bootstrapTable('getData'), function (row) {
+			return {"id": row.id, "itemId": row.itemId, "quantity": row.quantity, "quantityDb": row.quantityDb };
+		})
+	}
+
+	$(function () {
+		$('#tab-list').bootstrapTable();
+		$('#tab-detail').bootstrapTable();
+
+		// 新規入庫
+		$('#btn-inv-add').prop('disabled', !$('#warehouseId').val());
+
+		$('[data-toggle="tooltip"]').each(function() {
+			if ($(this).children('button').is(":disabled")) {
+				$(this).tooltip();
+			} else {
+				$(this).removeAttr('title');
+			}
+		});
+		
+		binding();
+	})
+
+	function binding() {
+
+		$('#btn-inv-add').click(function() {
+			if ($('#tab-detail').bootstrapTable('getData').length > 0 &&
+				!confirm("入力された情報がなくなります。よろしいですか？")) {
+				return;
+			}
+			$('#tab-detail').bootstrapTable('removeAll');
+			$('#item-detail').show();
+			$('#control-add').show();
+			$('#mode').val(1);
+		});
+
+		$('#warehouseId-sel').change(function () {
+
+			if ($('#tab-detail').bootstrapTable('getData').length > 0 &&
+				!confirm("入力された情報がなくなります。よろしいですか？")) {
+				$(this).val($('#warehouseId').val());
+				return;
+			}
+			const id = $(this).val();
+			if (id == '') {
+				location = "in";
+				return;
+			};
+
+			$('#warehouseId').val(id);
+			$("#frm").attr("action", "in").attr("method", "get").submit();
+		});
+
+		$('#calendar').change(function() {
+
+			if ($('#tab-detail').bootstrapTable('getData').length > 0 &&
+				!confirm("入力された情報がなくなります。よろしいですか？")) {
+				return;
+			}			
+			$('#ym').val(this.value);
+			$("#frm").attr("action", "in").attr("method", "get").submit();
+		});
+				
+		$('#btn-upd').click(function () {
+			const tabData = getSelections();
+			if (tabData.length == 0) {
+				return;
+			}
+
+			$('#addData').val(JSON.stringify(tabData));
+			$('#ymd').val($('#calendar-ymd').val());
+			
+			if ($('#mode').val() == 1) {
+				$("#frm").attr("action", "in/add").submit();
+			} else {
+				$("#frm").attr("action", "in/modify").submit();
+			}
+		});
+
+		$('#tab-list').on('dbl-click-row.bs.table', function(row, $tr, field) {
+			if ($('#tab-detail').bootstrapTable('getData').length > 0 &&
+				!confirm("入力された情報がなくなります。よろしいですか？")) {
+				return;
+			}
+
+			$('#detailId').val($tr.id);
+			$("#frm").attr("action", "in").attr("method", "get").submit();
+		})
+	}
+
+</script>
+{% endblock %}
+
+{% block component %}
+	{% include 'includes/item_modal.php' %}
+{% endblock %}

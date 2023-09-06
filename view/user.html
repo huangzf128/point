@@ -1,0 +1,159 @@
+{% extends "layout.html" %}
+
+{% block link %}
+<link rel="stylesheet" href="css/menutree.css?{{tm}}">
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+
+	<ul class="breadcrumb">
+		<li><a href="">スタートメニュー</a> <span class="divider">&gt;</span></li>
+		<li class=active>ユーザ管理</li>
+	</ul>
+
+	<div class="card info-card sales-card">
+		<div class="filter">
+			<button id="btn-add" type="button" class="btn btn-primary btn-sm me-3">ユーザ登録</button>
+		</div>
+		<div class="card-body">
+			<h5 class="card-title">ユーザ一覧</h5>
+			<table id="tab" class="table table-striped table-sm" data-mobile-responsive="true" data-check-on-init="false">
+				<colgroup>
+					<col class="col-md-3">
+					<col class="col-md-3">
+					<col class="col-md-2">
+					<col class="col-md-1">
+					<col class="col-md-2">
+				</colgroup>
+				<thead>
+					<tr>
+						<th scope="col" data-field="id">ユーザID</th>
+						<th scope="col" data-field="name">ユーザ名</th>
+						<th scope="col" >権限</th>
+						<th scope="col" >状態</th>
+						<th data-formatter='Formatter.removemodify' data-align="center" data-events="operateEvents" data-cell-style="cellStyle">操作</th>
+						<th scope="col" data-field="type" data-visible="false"></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for user in users %}
+					<tr>
+						<td>{{ user.id}}</td>
+						<td>{{ user.name}}</td>
+						<td>{{ user.type | userType}}</td>
+						<td>{{ user.deleteFlag | delStatus }}</td>
+						<td></td>
+						<td>{{ user.type}}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<!-- End Table with stripped rows -->
+
+		</div>
+	</div>
+
+	<form id="frm" method="post" action="">
+		<!-- Modal -->
+		<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="staticBackdropLabel">ユーザ情報</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="mb-3 form-floating">
+							<input class="form-control" id="id" name="id" />
+							<label for="id">ユーザID：</label>
+						</div>
+						<div class="mb-3 form-floating">
+							<input class="form-control" id="name" name="name" />
+							<label for="name">ユーザ名：</label>
+						</div>
+						<div class="mb-3 form-floating">
+							<input type="password" class="form-control" id="password" name="password" />
+							<label for="password">パスワード：</label>
+							<div id="psd-comment" class="form-label small text-danger">※パスワードを変更しない場合、空欄のままにしてください。</div>
+						</div>
+
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="type" id="type9" value="9">
+							<label class="form-check-label" for="type9">管理者</label>
+						</div>
+
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="type" id="type1" checked value="1">
+							<label class="form-check-label" for="type">一般ユーザ</label>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">閉じる</button>
+						<button type="button" class="btn btn-primary btn-sm" id="modal-btn-confirm">確　定</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+</div><!-- end container -->
+{% endblock %}
+
+
+{% block script %}
+<script>
+	operateEvents = {
+		'click .remove': function (e, value, row, index) {
+			if (confirm("削除します。よろしいですか？")) {
+				$('#id').val(row.id);
+				
+				$("#frm").attr("action", "user/remove").submit();
+			}
+		},
+		'click .modify': function (e, value, row, index) {
+			$('#staticBackdrop').modal('show');
+			$('#id').val(row.id).attr('readonly', true);
+			$('#name').val(row.name);			
+			$('#type' + row.type).prop('checked', true);
+			$('#psd-comment').show();
+			$("#frm").attr("action", "user/modify");
+			ignoreValidationItem(gValidator, ["password"]);
+		}
+	}
+
+	$(function () {
+
+		$('#tab').bootstrapTable();
+
+		$('#btn-add').click(function () {
+			$("#frm").attr("action", "user/add");
+			$('#staticBackdrop').modal('show');
+			$('#psd-comment').hide();
+			$('#id').attr('readonly', false);
+			addValidationItem(gValidator, {password: {required: true, minlength: 6, alphaNumMix: true }})
+		});
+
+		$('#modal-btn-confirm').click(function () {
+			$("#frm").submit();
+		});
+
+		gValidator = $('form').validate(validator_setting.addRule({
+			id: 		{ required: true, minlength: 4, alphaNum: true},
+			password: 	{ required: true, minlength: 6, alphaNumMix: true },
+			name:		{ required: true }
+		}));
+	});
+
+	function cellStyle(value, row, index) {
+		if (row.deleteFlag == 1) {
+			return { classes: "hide" }
+		} else {
+			return { classes: "" }
+		}
+	}
+</script>
+{% endblock %}
